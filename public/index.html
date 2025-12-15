@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="en" class="h-full bg-zinc-950 text-zinc-50">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>systemd</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="h-full text-[17px]">
+    <div class="mx-auto flex h-full max-w-screen-2xl flex-col gap-6 p-6">
+      <header class="flex items-center gap-4">
+        <h1 class="text-lg font-semibold tracking-tight">systemd</h1>
+        <div class="flex-1"></div>
+        <input
+          id="q"
+          class="h-9 w-64 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-base text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+          placeholder="Search unit"
+          autocomplete="off"
+          data-i18n-placeholder="searchUnit"
+        />
+        <button
+          id="lang"
+          class="h-9 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-base text-zinc-100 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+          type="button"
+        ></button>
+        <button
+          id="reload"
+          class="h-9 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-base text-zinc-100 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+          data-i18n="reload"
+        >
+          Reload
+        </button>
+      </header>
+
+      <main class="grid flex-1 grid-cols-1 gap-6 min-h-0 lg:grid-cols-2">
+        <section class="flex min-h-0 flex-col rounded-lg border border-zinc-800 bg-zinc-950/50">
+          <div class="border-b border-zinc-800 p-4">
+            <div class="flex items-center gap-3">
+              <div id="count" class="text-base text-zinc-400"></div>
+              <div class="flex-1"></div>
+              <select
+                id="type"
+                class="h-9 rounded-md border border-zinc-800 bg-zinc-950 px-2 text-base text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+              >
+                <option id="typeAll" value="" data-i18n="typeAll">All</option>
+                <option value="service">service</option>
+                <option value="socket">socket</option>
+                <option value="timer">timer</option>
+                <option value="mount">mount</option>
+                <option value="target">target</option>
+              </select>
+            </div>
+            <div class="mt-4 flex items-start gap-3">
+               <div class="mt-2 text-sm text-zinc-400" data-i18n="targets">Targets</div>
+
+              <div class="relative w-full min-w-0">
+                <button
+                  id="targetsBtn"
+                  type="button"
+                  class="flex h-10 w-full items-center justify-between rounded-md border border-zinc-800 bg-zinc-950 px-3 text-base text-zinc-100 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                ></button>
+                <div
+                  id="targetsPanel"
+                  class="absolute z-10 mt-2 hidden w-full overflow-hidden rounded-md border border-zinc-800 bg-zinc-950 shadow-xl"
+                >
+                  <div class="flex items-center gap-2 border-b border-zinc-800 p-2">
+                    <input
+                      id="targetsQ"
+                      class="h-9 flex-1 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-base text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                      placeholder="Search target"
+                      data-i18n-placeholder="searchTarget"
+                      autocomplete="off"
+                    />
+                    <button
+                      id="targetsClear"
+                      type="button"
+                      class="h-9 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-base text-zinc-100 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                      data-i18n="clear"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div id="targetsList" class="max-h-80 overflow-auto p-1"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="min-h-0 flex-1 overflow-auto">
+            <table class="w-full border-separate border-spacing-0 text-base">
+              <thead class="sticky top-0 bg-zinc-950">
+                <tr class="text-left text-zinc-400">
+                  <th class="border-b border-zinc-800 px-4 py-3 font-medium" data-i18n="thUnit">Unit</th>
+                  <th class="border-b border-zinc-800 px-4 py-3 font-medium" data-i18n="thActive">Active</th>
+                  <th class="border-b border-zinc-800 px-4 py-3 font-medium" data-i18n="thEnabled">Enabled</th>
+                </tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="flex min-h-0 flex-col rounded-lg border border-zinc-800 bg-zinc-950/50">
+          <div class="flex items-start justify-between gap-4 border-b border-zinc-800 p-4">
+            <div class="min-w-0">
+              <div id="unitName" class="truncate font-medium"></div>
+              <div id="unitDesc" class="truncate text-sm text-zinc-400"></div>
+            </div>
+            <div id="unitStates" class="shrink-0 text-right text-sm text-zinc-400"></div>
+          </div>
+
+          <div class="min-h-0 flex-1 space-y-4 overflow-auto p-4">
+            <div id="schedule" class="grid grid-cols-1 gap-4 sm:grid-cols-2"></div>
+            <div id="runs" class="rounded-lg border border-zinc-800 bg-zinc-950 p-4">
+              <div class="flex items-center justify-between gap-4">
+                <div class="text-sm text-zinc-400" data-i18n="runsTitle">Last 10 runs</div>
+                <button
+                  id="runsReload"
+                  type="button"
+                  class="h-9 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-base text-zinc-100 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                  data-i18n="reload"
+                >
+                  Reload
+                </button>
+              </div>
+              <div class="mt-3">
+                <svg id="runsChart" viewBox="0 0 100 24" class="h-10 w-full"></svg>
+              </div>
+              <div id="runsList" class="mt-3 divide-y divide-zinc-900"></div>
+            </div>
+            <pre id="runLogs" class="min-h-24 whitespace-pre-wrap rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-100"></pre>
+            <div id="props" class="grid grid-cols-1 gap-4 sm:grid-cols-2"></div>
+            <pre id="unitCat" class="min-h-24 whitespace-pre-wrap rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-100"></pre>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module">
+      const q = document.getElementById("q")
+      const type = document.getElementById("type")
+      const langBtn = document.getElementById("lang")
+      const targetsBtn = document.getElementById("targetsBtn")
+      const targetsPanel = document.getElementById("targetsPanel")
+      const targetsQ = document.getElementById("targetsQ")
+      const targetsClear = document.getElementById("targetsClear")
+      const targetsList = document.getElementById("targetsList")
+      const reload = document.getElementById("reload")
+      const count = document.getElementById("count")
+      const rows = document.getElementById("rows")
+      const unitName = document.getElementById("unitName")
+      const unitDesc = document.getElementById("unitDesc")
+      const unitStates = document.getElementById("unitStates")
+      const schedule = document.getElementById("schedule")
+      const runsReload = document.getElementById("runsReload")
+      const runsChart = document.getElementById("runsChart")
+      const runsList = document.getElementById("runsList")
+      const runLogs = document.getElementById("runLogs")
+      const props = document.getElementById("props")
+      const unitCat = document.getElementById("unitCat")
+
+      let allUnits = []
+      let selected = null
+      let allTargets = []
+      let runsLogUnit = null
+
+      const i18nKey = "systemd-ui.lang"
+      const I18N = {
+        en: {
+          searchUnit: "Search unit",
+          reload: "Reload",
+          typeAll: "All",
+          targets: "Targets",
+          searchTarget: "Search target",
+          clear: "Clear",
+          runsTitle: "Last 10 runs",
+          thUnit: "Unit",
+          thActive: "Active",
+          thEnabled: "Enabled",
+          nextRun: "Next run",
+          lastRun: "Last run",
+          timer: "Timer",
+          activates: "Activates",
+          pickRun: "Select a run to view logs",
+          noRuns: "No history in journal",
+          loading: "Loading...",
+          units: (n) => `${n} units`,
+          targetsAll: "All targets",
+          targetsCount: (n) => `${n} targets`,
+          notFound: "No units found",
+        },
+        es: {
+          searchUnit: "Buscar unidad",
+          reload: "Recargar",
+          typeAll: "Todo",
+          targets: "Targets",
+          searchTarget: "Buscar target",
+          clear: "Limpiar",
+          runsTitle: "Últimas 10 corridas",
+          thUnit: "Unidad",
+          thActive: "Activa",
+          thEnabled: "Habilitada",
+          nextRun: "Próxima corrida",
+          lastRun: "Última corrida",
+          timer: "Timer",
+          activates: "Activa",
+          pickRun: "Seleccioná una corrida para ver logs",
+          noRuns: "Sin historial en journal",
+          loading: "Cargando...",
+          units: (n) => `${n} unidades`,
+          targetsAll: "Todos los targets",
+          targetsCount: (n) => `${n} targets`,
+          notFound: "No se encontraron unidades",
+        },
+      }
+
+      let lang = (() => {
+        try {
+          const v = localStorage.getItem(i18nKey)
+          return v === "es" ? "es" : "en"
+        } catch {
+          return "en"
+        }
+      })()
+
+      const t = (k) => (I18N[lang] && I18N[lang][k]) || (I18N.en && I18N.en[k]) || ""
+
+      const applyI18n = () => {
+        document.documentElement.lang = lang
+        langBtn.textContent = lang === "en" ? "ES" : "EN"
+
+        for (const el of document.querySelectorAll("[data-i18n]")) {
+          const key = el.getAttribute("data-i18n")
+          const val = t(key)
+          if (typeof val === "string") el.textContent = val
+        }
+
+        for (const el of document.querySelectorAll("[data-i18n-placeholder]")) {
+          const key = el.getAttribute("data-i18n-placeholder")
+          const val = t(key)
+          if (typeof val === "string") el.setAttribute("placeholder", val)
+        }
+      }
+
+      const setLang = (next) => {
+        lang = next === "es" ? "es" : "en"
+        try {
+          localStorage.setItem(i18nKey, lang)
+        } catch {}
+        applyI18n()
+        renderTargetsButton()
+        renderRows()
+        if (selected) loadScheduleAndRuns(selected)
+      }
+
+      const storageKey = "systemd-ui.targets"
+
+      const readStoredTargets = () => {
+        try {
+          const v = localStorage.getItem(storageKey)
+          const arr = JSON.parse(v || "[]")
+          return Array.isArray(arr) ? arr.filter((s) => typeof s === "string") : []
+        } catch {
+          return []
+        }
+      }
+
+      const writeStoredTargets = (arr) => {
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(arr))
+        } catch {}
+      }
+
+      let selectedTargets = readStoredTargets()
+
+      const getSelectedTargets = () => selectedTargets
+
+      const setSelectedTargets = (names, persist = true) => {
+        selectedTargets = Array.from(new Set(names))
+        if (persist) writeStoredTargets(selectedTargets)
+        renderTargetsButton()
+      }
+
+      const badge = (text, variant) => {
+        const span = document.createElement("span")
+        span.textContent = text
+        span.className =
+          "inline-flex items-center rounded-md border px-2 py-0.5 text-xs " +
+          (variant === "ok"
+            ? "border-emerald-900 bg-emerald-950 text-emerald-200"
+            : variant === "warn"
+              ? "border-amber-900 bg-amber-950 text-amber-200"
+              : variant === "bad"
+                ? "border-rose-900 bg-rose-950 text-rose-200"
+                : "border-zinc-800 bg-zinc-950 text-zinc-300")
+        return span
+      }
+
+      const pill = (activeState) => {
+        if (activeState === "active") return badge("active", "ok")
+        if (activeState === "inactive") return badge("inactive", "neutral")
+        if (activeState === "failed") return badge("failed", "bad")
+        return badge(activeState || "?", "neutral")
+      }
+
+      const enabledPill = (unitFileState) => {
+        if (unitFileState === "enabled") return badge("enabled", "ok")
+        if (unitFileState === "disabled") return badge("disabled", "neutral")
+        if (unitFileState === "static") return badge("static", "warn")
+        if (unitFileState) return badge(unitFileState, "neutral")
+        return badge("?", "neutral")
+      }
+
+      const filterUnits = () => {
+        const query = q.value.trim().toLowerCase()
+        const t = type.value
+        const suffix = t ? "." + t : ""
+
+        return allUnits.filter((u) => {
+          const name = (u.unit || "").toLowerCase()
+          const desc = (u.description || "").toLowerCase()
+          if (query && !name.includes(query) && !desc.includes(query)) return false
+          if (suffix && !(u.unit || "").endsWith(suffix)) return false
+          return true
+        })
+      }
+
+      const clearChildren = (el) => {
+        while (el.firstChild) el.removeChild(el.firstChild)
+      }
+
+      const renderTargetsButton = () => {
+        const n = selectedTargets.length
+        targetsBtn.textContent = n ? I18N[lang].targetsCount(n) : I18N[lang].targetsAll
+      }
+
+      const setPanelOpen = (open) => {
+        targetsPanel.classList.toggle("hidden", !open)
+        if (open) targetsQ.focus()
+      }
+
+      const renderTargetsList = () => {
+        const query = targetsQ.value.trim().toLowerCase()
+        clearChildren(targetsList)
+
+        const frag = document.createDocumentFragment()
+        for (const t of allTargets) {
+          const name = t.unit
+          const desc = t.description || ""
+          if (query && !name.toLowerCase().includes(query) && !desc.toLowerCase().includes(query)) continue
+
+          const row = document.createElement("button")
+          row.type = "button"
+          row.className = "flex w-full items-start gap-3 rounded-md px-2 py-2 text-left hover:bg-zinc-900"
+
+          const mark = document.createElement("div")
+          mark.className = "mt-0.5 w-5 text-center text-sm"
+          mark.textContent = selectedTargets.includes(name) ? "✓" : ""
+
+          const body = document.createElement("div")
+          body.className = "min-w-0"
+
+          const title = document.createElement("div")
+          title.className = "truncate text-base text-zinc-100"
+          title.textContent = name
+
+          const subtitle = document.createElement("div")
+          subtitle.className = "truncate text-sm text-zinc-400"
+          subtitle.textContent = desc
+
+          body.appendChild(title)
+          body.appendChild(subtitle)
+          row.appendChild(mark)
+          row.appendChild(body)
+
+          row.addEventListener("click", (e) => {
+            e.stopPropagation()
+            const next = selectedTargets.includes(name)
+              ? selectedTargets.filter((x) => x !== name)
+              : selectedTargets.concat(name)
+            setSelectedTargets(next)
+            renderTargetsList()
+            loadUnits()
+          })
+
+          frag.appendChild(row)
+        }
+
+        targetsList.appendChild(frag)
+      }
+
+      const loadTargets = async () => {
+        try {
+          const r = await fetch("/api/targets")
+          const data = await r.json()
+          if (!r.ok) throw new Error(data.error || "error")
+          allTargets = data.targets || []
+          const available = new Set(allTargets.map((t) => t.unit))
+          setSelectedTargets(selectedTargets.filter((t) => available.has(t)))
+          renderTargetsList()
+        } catch (e) {
+          allTargets = []
+          renderTargetsButton()
+          clearChildren(targetsList)
+          renderDetail(null, String(e.message || e))
+        }
+      }
+
+      const renderRows = () => {
+        const data = filterUnits()
+        clearChildren(rows)
+
+        const frag = document.createDocumentFragment()
+        for (const u of data) {
+          const tr = document.createElement("tr")
+          tr.className = "cursor-pointer hover:bg-zinc-900" + (u.unit === selected ? " bg-zinc-900" : "")
+          tr.dataset.unit = u.unit
+
+          const tdName = document.createElement("td")
+          tdName.className = "border-b border-zinc-900 px-4 py-3"
+
+          const nameWrap = document.createElement("div")
+          nameWrap.className = "min-w-0"
+
+          const name = document.createElement("div")
+          name.className = "truncate font-medium text-zinc-100"
+          name.textContent = u.unit
+
+          const desc = document.createElement("div")
+          desc.className = "truncate text-sm text-zinc-400"
+          desc.textContent = u.description || ""
+
+          nameWrap.appendChild(name)
+          nameWrap.appendChild(desc)
+          tdName.appendChild(nameWrap)
+
+          const tdActive = document.createElement("td")
+          tdActive.className = "border-b border-zinc-900 px-4 py-3"
+          tdActive.appendChild(pill(u.activeState))
+
+          const tdEnabled = document.createElement("td")
+          tdEnabled.className = "border-b border-zinc-900 px-4 py-3"
+          tdEnabled.appendChild(enabledPill(u.unitFileState))
+
+          tr.appendChild(tdName)
+          tr.appendChild(tdActive)
+          tr.appendChild(tdEnabled)
+
+          tr.addEventListener("click", () => selectUnit(u.unit))
+          frag.appendChild(tr)
+        }
+
+        rows.appendChild(frag)
+        count.textContent = I18N[lang].units(data.length)
+      }
+
+      const fmt = (ms) => {
+        if (!ms) return "—"
+        try {
+          return new Date(ms).toLocaleString(undefined, {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          })
+        } catch {
+          return "—"
+        }
+      }
+
+      const resetRuns = () => {
+        runsLogUnit = null
+        runsChart.innerHTML = ""
+        clearChildren(runsList)
+        runLogs.textContent = t("pickRun")
+      }
+
+      const renderSchedule = (s) => {
+        clearChildren(schedule)
+
+        const mk = (label, value) => {
+          const card = document.createElement("div")
+          card.className = "rounded-lg border border-zinc-800 bg-zinc-950 p-4"
+
+          const head = document.createElement("div")
+          head.className = "text-sm text-zinc-400"
+          head.textContent = label
+
+          const body = document.createElement("div")
+          body.className = "mt-1 break-words text-base text-zinc-100"
+          body.textContent = value
+
+          card.appendChild(head)
+          card.appendChild(body)
+          schedule.appendChild(card)
+        }
+
+        if (!s) {
+          mk(t("nextRun"), "—")
+          mk(t("lastRun"), "—")
+          return
+        }
+
+        mk(t("nextRun"), fmt(s.nextMs))
+        mk(t("lastRun"), fmt(s.lastMs))
+        if (s.timer) mk(t("timer"), s.timer)
+        if (s.activates && s.kind === "timer") mk(t("activates"), s.activates)
+      }
+
+      const renderRuns = (runs) => {
+        resetRuns()
+        const items = runs || []
+        if (!items.length) {
+          runLogs.textContent = t("noRuns")
+          return
+        }
+
+        const durs = items
+          .map((r) => {
+            if (typeof r.durationMs === "number") return r.durationMs
+            if (typeof r.cpuUsageNsec === "number") return Math.floor(r.cpuUsageNsec / 1_000_000)
+            return 0
+          })
+          .map((d) => Math.max(0, d))
+        const maxDur = Math.max(1, ...durs)
+
+        const svgNS = "http://www.w3.org/2000/svg"
+        const w = 100
+        const h = 24
+        const gap = 1
+        const barW = (w - gap * (items.length - 1)) / items.length
+
+        for (let i = 0; i < items.length; i++) {
+          const r = items[i]
+          const dur = durs[i]
+          const bh = Math.max(1, Math.round((dur / maxDur) * (h - 2)))
+          const x = i * (barW + gap)
+          const y = h - bh
+
+          const rect = document.createElementNS(svgNS, "rect")
+          rect.setAttribute("x", String(x))
+          rect.setAttribute("y", String(y))
+          rect.setAttribute("width", String(barW))
+          rect.setAttribute("height", String(bh))
+          rect.setAttribute("rx", "1")
+
+          const status = r.status
+          rect.setAttribute(
+            "fill",
+            status === "failed" ? "#881337" : status === "success" ? "#064e3b" : "#27272a"
+          )
+
+          runsChart.appendChild(rect)
+        }
+
+        for (const r of items) {
+          const row = document.createElement("button")
+          row.type = "button"
+          row.className = "flex w-full items-center justify-between gap-4 py-2 text-left hover:bg-zinc-900"
+
+          const left = document.createElement("div")
+          left.className = "min-w-0"
+
+          const t = document.createElement("div")
+          t.className = "truncate text-base text-zinc-100"
+          t.textContent = fmt(r.startMs)
+
+          const sub = document.createElement("div")
+          sub.className = "truncate text-sm text-zinc-400"
+          const durMs =
+            typeof r.durationMs === "number"
+              ? r.durationMs
+              : typeof r.cpuUsageNsec === "number"
+                ? Math.floor(r.cpuUsageNsec / 1_000_000)
+                : null
+          const dur =
+            typeof durMs === "number" ? (durMs < 1000 ? durMs + "ms" : (durMs / 1000).toFixed(1) + "s") : "—"
+          sub.textContent = [r.status || "unknown", dur].join(" · ")
+
+          left.appendChild(t)
+          left.appendChild(sub)
+
+          const right = document.createElement("div")
+          right.className = "shrink-0"
+          right.appendChild(badge(r.status || "unknown", r.status === "failed" ? "bad" : r.status === "success" ? "ok" : "neutral"))
+
+          row.appendChild(left)
+          row.appendChild(right)
+
+          row.addEventListener("click", async (e) => {
+            e.stopPropagation()
+            runLogs.textContent = t("loading")
+            try {
+              const u = runsLogUnit || selected
+              const resp = await fetch(
+                "/api/logs/" + encodeURIComponent(u) + "/" + encodeURIComponent(r.invocationId) + "?limit=800"
+              )
+              const data = await resp.json()
+              if (!resp.ok) throw new Error(data.error || "error")
+              runLogs.textContent = data.logs || ""
+            } catch (err) {
+              runLogs.textContent = String(err.message || err)
+            }
+          })
+
+          runsList.appendChild(row)
+        }
+      }
+
+      const loadScheduleAndRuns = async (unit) => {
+        renderSchedule(null)
+        resetRuns()
+        try {
+          const [sr, rr] = await Promise.all([
+            fetch("/api/schedule/" + encodeURIComponent(unit)),
+            fetch("/api/runs/" + encodeURIComponent(unit) + "?limit=10"),
+          ])
+          const s = await sr.json()
+          if (!sr.ok) throw new Error(s.error || "error")
+          renderSchedule(s)
+
+          const r = await rr.json()
+          if (!rr.ok) throw new Error(r.error || "error")
+          runsLogUnit = r.logUnit || unit
+          renderRuns(r.runs || [])
+        } catch (e) {
+          renderSchedule(null)
+          resetRuns()
+          runLogs.textContent = String(e.message || e)
+        }
+      }
+
+      const renderDetail = (detail, err) => {
+        if (err) {
+          unitName.textContent = selected || ""
+          unitDesc.textContent = ""
+          unitStates.textContent = ""
+          clearChildren(schedule)
+          clearChildren(runsList)
+          runsChart.innerHTML = ""
+          runLogs.textContent = ""
+          clearChildren(props)
+          unitCat.textContent = err
+          return
+        }
+
+        const p = detail.properties || {}
+        unitName.textContent = p.Id || detail.unit || ""
+        unitDesc.textContent = p.Description || ""
+        unitStates.textContent = [p.LoadState, p.ActiveState, p.SubState].filter(Boolean).join(" · ")
+
+        clearChildren(props)
+        const keys = [
+          ["UnitFileState", "UnitFileState"],
+          ["FragmentPath", "FragmentPath"],
+          ["DropInPaths", "DropInPaths"],
+          ["Documentation", "Documentation"],
+          ["Requires", "Requires"],
+          ["Wants", "Wants"],
+          ["After", "After"],
+        ]
+
+        for (const [k, label] of keys) {
+          const v = p[k]
+          if (!v) continue
+          const card = document.createElement("div")
+          card.className = "rounded-lg border border-zinc-800 bg-zinc-950 p-4"
+
+          const head = document.createElement("div")
+          head.className = "text-sm text-zinc-400"
+          head.textContent = label
+
+          const body = document.createElement("div")
+          body.className = "mt-1 break-words text-base text-zinc-100"
+          body.textContent = v
+
+          card.appendChild(head)
+          card.appendChild(body)
+          props.appendChild(card)
+        }
+
+        unitCat.textContent = detail.cat || ""
+      }
+
+      const selectUnit = async (unit) => {
+        selected = unit
+        renderRows()
+        unitName.textContent = unit
+        unitDesc.textContent = ""
+        unitStates.textContent = ""
+        clearChildren(schedule)
+        clearChildren(props)
+        unitCat.textContent = t("loading")
+        runLogs.textContent = t("pickRun")
+        loadScheduleAndRuns(unit)
+
+        try {
+          const r = await fetch("/api/unit/" + encodeURIComponent(unit))
+          const data = await r.json()
+          if (!r.ok) throw new Error(data.error || "error")
+          renderDetail(data)
+        } catch (e) {
+          renderDetail(null, String(e.message || e))
+        }
+      }
+
+      const loadUnits = async () => {
+        const selectedTargets = getSelectedTargets()
+        const url = selectedTargets.length
+          ? "/api/units?targets=" + encodeURIComponent(selectedTargets.join(","))
+          : "/api/units"
+
+        reload.disabled = true
+        reload.textContent = t("loading")
+        try {
+          const r = await fetch(url)
+          const data = await r.json()
+          if (!r.ok) throw new Error(data.error || "error")
+          allUnits = data.units || []
+          const keep = selected && allUnits.some((u) => u.unit === selected)
+          renderRows()
+          if (keep) selectUnit(selected)
+          else if (allUnits.length) selectUnit(allUnits[0].unit)
+          else renderDetail(null, t("notFound"))
+        } catch (e) {
+          allUnits = []
+          selected = null
+          renderRows()
+          renderDetail(null, String(e.message || e))
+        } finally {
+          reload.disabled = false
+          reload.textContent = t("reload")
+        }
+      }
+
+      const debounce = (() => {
+        let t = null
+        return (fn, ms) => {
+          clearTimeout(t)
+          t = setTimeout(fn, ms)
+        }
+      })()
+
+      q.addEventListener("input", () => debounce(renderRows, 80))
+      type.addEventListener("change", renderRows)
+      reload.addEventListener("click", loadUnits)
+      runsReload.addEventListener("click", () => {
+        if (selected) loadScheduleAndRuns(selected)
+      })
+
+      targetsBtn.addEventListener("click", (e) => {
+        e.stopPropagation()
+        const open = targetsPanel.classList.contains("hidden")
+        setPanelOpen(open)
+        if (open) renderTargetsList()
+      })
+
+      targetsPanel.addEventListener("click", (e) => e.stopPropagation())
+
+      targetsQ.addEventListener("input", () => debounce(renderTargetsList, 60))
+
+      targetsClear.addEventListener("click", (e) => {
+        e.stopPropagation()
+        targetsQ.value = ""
+        setSelectedTargets([])
+        renderTargetsList()
+        loadUnits()
+      })
+
+      document.addEventListener("click", (e) => {
+        if (targetsPanel.classList.contains("hidden")) return
+        if (targetsPanel.contains(e.target) || targetsBtn.contains(e.target)) return
+        setPanelOpen(false)
+      })
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") setPanelOpen(false)
+      })
+
+      langBtn.addEventListener("click", () => setLang(lang === "en" ? "es" : "en"))
+
+      applyI18n()
+      renderTargetsButton()
+      loadTargets().then(loadUnits)
+    </script>
+  </body>
+</html>
