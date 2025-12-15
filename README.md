@@ -10,6 +10,10 @@ python3 server.py
 
 Open `http://127.0.0.1:5173`.
 
+## Demo
+
+![systemd-ui demo](public/assets/poso_graphs.gif)
+
 ## Notes
 
 - Requires access to `systemctl` and `journalctl`.

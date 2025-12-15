@@ -1,31 +1,32 @@
 <!doctype html>
-<html lang="en" class="h-full bg-zinc-950 text-zinc-50">
+<html lang="en" class="h-full bg-[#15110f] text-white">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>systemd</title>
+    <link rel="icon" href="/assets/img/favicon.png" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="h-full text-[17px]">
     <div class="mx-auto flex h-full max-w-screen-2xl flex-col gap-6 p-6">
       <header class="flex items-center gap-4">
-        <h1 class="text-lg font-semibold tracking-tight">systemd</h1>
+        <img src="/assets/img/logo-blue-trim.png" alt="POSO" class="h-8" />
         <div class="flex-1"></div>
         <input
           id="q"
-          class="h-9 w-64 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-base text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+          class="h-9 w-64 rounded-md border border-[#24325f] bg-[#15110f] px-3 text-base text-white placeholder:text-[#24325f] focus:outline-none focus:ring-2 focus:ring-[#4d4cf8]"
           placeholder="Search unit"
           autocomplete="off"
           data-i18n-placeholder="searchUnit"
         />
         <button
           id="lang"
-          class="h-9 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-base text-zinc-100 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+          class="h-9 rounded-md border border-[#24325f] bg-[#15110f] px-3 text-base text-white hover:bg-[#24325f] focus:outline-none focus:ring-2 focus:ring-[#4d4cf8]"
           type="button"
         ></button>
         <button
           id="reload"
-          class="h-9 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-base text-zinc-100 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+          class="h-9 rounded-md border border-[#24325f] bg-[#15110f] px-3 text-base text-white hover:bg-[#24325f] focus:outline-none focus:ring-2 focus:ring-[#4d4cf8]"
           data-i18n="reload"
         >
           Reload
@@ -33,14 +34,14 @@
       </header>
 
       <main class="grid flex-1 grid-cols-1 gap-6 min-h-0 lg:grid-cols-2">
-        <section class="flex min-h-0 flex-col rounded-lg border border-zinc-800 bg-zinc-950/50">
-          <div class="border-b border-zinc-800 p-4">
+        <section class="flex min-h-0 flex-col rounded-lg border border-[#24325f] bg-[#15110f]/50">
+          <div class="border-b border-[#24325f] p-4">
             <div class="flex items-center gap-3">
-              <div id="count" class="text-base text-zinc-400"></div>
+              <div id="count" class="text-base text-[#efacba]"></div>
               <div class="flex-1"></div>
               <select
                 id="type"
-                class="h-9 rounded-md border border-zinc-800 bg-zinc-950 px-2 text-base text-zinc-100 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                class="h-9 rounded-md border border-[#24325f] bg-[#15110f] px-2 text-base text-white focus:outline-none focus:ring-2 focus:ring-[#4d4cf8]"
               >
                 <option id="typeAll" value="" data-i18n="typeAll">All</option>
                 <option value="service">service</option>
@@ -51,22 +52,22 @@
               </select>
             </div>
             <div class="mt-4 flex items-start gap-3">
-               <div class="mt-2 text-sm text-zinc-400" data-i18n="targets">Targets</div>
+               <div class="mt-2 text-sm text-[#efacba]" data-i18n="targets">Targets</div>
 
               <div class="relative w-full min-w-0">
                 <button
                   id="targetsBtn"
                   type="button"
-                  class="flex h-10 w-full items-center justify-between rounded-md border border-zinc-800 bg-zinc-950 px-3 text-base text-zinc-100 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                  class="flex h-10 w-full items-center justify-between rounded-md border border-[#24325f] bg-[#15110f] px-3 text-base text-white hover:bg-[#24325f] focus:outline-none focus:ring-2 focus:ring-[#4d4cf8]"
                 ></button>
                 <div
                   id="targetsPanel"
-                  class="absolute z-10 mt-2 hidden w-full overflow-hidden rounded-md border border-zinc-800 bg-zinc-950 shadow-xl"
+                  class="absolute z-10 mt-2 hidden w-full overflow-hidden rounded-md border border-[#24325f] bg-[#15110f] shadow-xl"
                 >
-                  <div class="flex items-center gap-2 border-b border-zinc-800 p-2">
+                  <div class="flex items-center gap-2 border-b border-[#24325f] p-2">
                     <input
                       id="targetsQ"
-                      class="h-9 flex-1 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-base text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                      class="h-9 flex-1 rounded-md border border-[#24325f] bg-[#15110f] px-3 text-base text-white placeholder:text-[#24325f] focus:outline-none focus:ring-2 focus:ring-[#4d4cf8]"
                       placeholder="Search target"
                       data-i18n-placeholder="searchTarget"
                       autocomplete="off"
@@ -74,7 +75,7 @@
                     <button
                       id="targetsClear"
                       type="button"
-                      class="h-9 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-base text-zinc-100 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                      class="h-9 rounded-md border border-[#24325f] bg-[#15110f] px-3 text-base text-white hover:bg-[#24325f] focus:outline-none focus:ring-2 focus:ring-[#4d4cf8]"
                       data-i18n="clear"
                     >
                       Clear
@@ -88,11 +89,11 @@
 
           <div class="min-h-0 flex-1 overflow-auto">
             <table class="w-full border-separate border-spacing-0 text-base">
-              <thead class="sticky top-0 bg-zinc-950">
-                <tr class="text-left text-zinc-400">
-                  <th class="border-b border-zinc-800 px-4 py-3 font-medium" data-i18n="thUnit">Unit</th>
-                  <th class="border-b border-zinc-800 px-4 py-3 font-medium" data-i18n="thActive">Active</th>
-                  <th class="border-b border-zinc-800 px-4 py-3 font-medium" data-i18n="thEnabled">Enabled</th>
+              <thead class="sticky top-0 bg-[#15110f]">
+                <tr class="text-left text-[#efacba]">
+                  <th class="border-b border-[#24325f] px-4 py-3 font-medium" data-i18n="thUnit">Unit</th>
+                  <th class="border-b border-[#24325f] px-4 py-3 font-medium" data-i18n="thActive">Active</th>
+                  <th class="border-b border-[#24325f] px-4 py-3 font-medium" data-i18n="thEnabled">Enabled</th>
                 </tr>
               </thead>
               <tbody id="rows"></tbody>
@@ -100,24 +101,24 @@
           </div>
         </section>
 
-        <section class="flex min-h-0 flex-col rounded-lg border border-zinc-800 bg-zinc-950/50">
-          <div class="flex items-start justify-between gap-4 border-b border-zinc-800 p-4">
+        <section class="flex min-h-0 flex-col rounded-lg border border-[#24325f] bg-[#15110f]/50">
+          <div class="flex items-start justify-between gap-4 border-b border-[#24325f] p-4">
             <div class="min-w-0">
               <div id="unitName" class="truncate font-medium"></div>
-              <div id="unitDesc" class="truncate text-sm text-zinc-400"></div>
+              <div id="unitDesc" class="truncate text-sm text-[#efacba]"></div>
             </div>
-            <div id="unitStates" class="shrink-0 text-right text-sm text-zinc-400"></div>
+            <div id="unitStates" class="shrink-0 text-right text-sm text-[#efacba]"></div>
           </div>
 
           <div class="min-h-0 flex-1 space-y-4 overflow-auto p-4">
             <div id="schedule" class="grid grid-cols-1 gap-4 sm:grid-cols-2"></div>
-            <div id="runs" class="rounded-lg border border-zinc-800 bg-zinc-950 p-4">
+            <div id="runs" class="rounded-lg border border-[#24325f] bg-[#15110f] p-4">
               <div class="flex items-center justify-between gap-4">
-                <div class="text-sm text-zinc-400" data-i18n="runsTitle">Last 10 runs</div>
+                <div class="text-sm text-[#efacba]" data-i18n="runsTitle">Last 10 runs</div>
                 <button
                   id="runsReload"
                   type="button"
-                  class="h-9 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-base text-zinc-100 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                  class="h-9 rounded-md border border-[#24325f] bg-[#15110f] px-3 text-base text-white hover:bg-[#24325f] focus:outline-none focus:ring-2 focus:ring-[#4d4cf8]"
                   data-i18n="reload"
                 >
                   Reload
@@ -126,11 +127,11 @@
               <div class="mt-3">
                 <svg id="runsChart" viewBox="0 0 100 24" class="h-10 w-full"></svg>
               </div>
-              <div id="runsList" class="mt-3 divide-y divide-zinc-900"></div>
+              <div id="runsList" class="mt-3 divide-y divide-[#24325f]"></div>
             </div>
-            <pre id="runLogs" class="min-h-24 whitespace-pre-wrap rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-100"></pre>
+            <pre id="runLogs" class="min-h-24 whitespace-pre-wrap rounded-lg border border-[#24325f] bg-[#15110f] p-4 text-sm text-white"></pre>
             <div id="props" class="grid grid-cols-1 gap-4 sm:grid-cols-2"></div>
-            <pre id="unitCat" class="min-h-24 whitespace-pre-wrap rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-100"></pre>
+            <pre id="unitCat" class="min-h-24 whitespace-pre-wrap rounded-lg border border-[#24325f] bg-[#15110f] p-4 text-sm text-white"></pre>
           </div>
         </section>
       </main>
@@ -287,12 +288,12 @@
         span.className =
           "inline-flex items-center rounded-md border px-2 py-0.5 text-xs " +
           (variant === "ok"
-            ? "border-emerald-900 bg-emerald-950 text-emerald-200"
+            ? "border-[#4d4cf8] bg-[#4d4cf8]/20 text-white"
             : variant === "warn"
-              ? "border-amber-900 bg-amber-950 text-amber-200"
+              ? "border-[#f75b46] bg-[#f75b46]/20 text-white"
               : variant === "bad"
-                ? "border-rose-900 bg-rose-950 text-rose-200"
-                : "border-zinc-800 bg-zinc-950 text-zinc-300")
+                ? "border-[#f75b46] bg-[#f75b46]/20 text-white"
+                : "border-[#24325f] bg-[#15110f] text-[#efacba]")
         return span
       }
 
@@ -351,7 +352,7 @@
 
           const row = document.createElement("button")
           row.type = "button"
-          row.className = "flex w-full items-start gap-3 rounded-md px-2 py-2 text-left hover:bg-zinc-900"
+          row.className = "flex w-full items-start gap-3 rounded-md px-2 py-2 text-left hover:bg-[#24325f]"
 
           const mark = document.createElement("div")
           mark.className = "mt-0.5 w-5 text-center text-sm"
@@ -361,11 +362,11 @@
           body.className = "min-w-0"
 
           const title = document.createElement("div")
-          title.className = "truncate text-base text-zinc-100"
+          title.className = "truncate text-base text-white"
           title.textContent = name
 
           const subtitle = document.createElement("div")
-          subtitle.className = "truncate text-sm text-zinc-400"
+          subtitle.className = "truncate text-sm text-[#efacba]"
           subtitle.textContent = desc
 
           body.appendChild(title)
@@ -413,21 +414,21 @@
         const frag = document.createDocumentFragment()
         for (const u of data) {
           const tr = document.createElement("tr")
-          tr.className = "cursor-pointer hover:bg-zinc-900" + (u.unit === selected ? " bg-zinc-900" : "")
+          tr.className = "cursor-pointer hover:bg-[#24325f]" + (u.unit === selected ? " bg-[#24325f]" : "")
           tr.dataset.unit = u.unit
 
           const tdName = document.createElement("td")
-          tdName.className = "border-b border-zinc-900 px-4 py-3"
+          tdName.className = "border-b border-[#24325f] px-4 py-3"
 
           const nameWrap = document.createElement("div")
           nameWrap.className = "min-w-0"
 
           const name = document.createElement("div")
-          name.className = "truncate font-medium text-zinc-100"
+          name.className = "truncate font-medium text-white"
           name.textContent = u.unit
 
           const desc = document.createElement("div")
-          desc.className = "truncate text-sm text-zinc-400"
+          desc.className = "truncate text-sm text-[#efacba]"
           desc.textContent = u.description || ""
 
           nameWrap.appendChild(name)
@@ -435,11 +436,11 @@
           tdName.appendChild(nameWrap)
 
           const tdActive = document.createElement("td")
-          tdActive.className = "border-b border-zinc-900 px-4 py-3"
+          tdActive.className = "border-b border-[#24325f] px-4 py-3"
           tdActive.appendChild(pill(u.activeState))
 
           const tdEnabled = document.createElement("td")
-          tdEnabled.className = "border-b border-zinc-900 px-4 py-3"
+          tdEnabled.className = "border-b border-[#24325f] px-4 py-3"
           tdEnabled.appendChild(enabledPill(u.unitFileState))
 
           tr.appendChild(tdName)
@@ -482,14 +483,14 @@
 
         const mk = (label, value) => {
           const card = document.createElement("div")
-          card.className = "rounded-lg border border-zinc-800 bg-zinc-950 p-4"
+          card.className = "rounded-lg border border-[#24325f] bg-[#15110f] p-4"
 
           const head = document.createElement("div")
-          head.className = "text-sm text-zinc-400"
+          head.className = "text-sm text-[#efacba]"
           head.textContent = label
 
           const body = document.createElement("div")
-          body.className = "mt-1 break-words text-base text-zinc-100"
+          body.className = "mt-1 break-words text-base text-white"
           body.textContent = value
 
           card.appendChild(head)
@@ -549,7 +550,7 @@
           const status = r.status
           rect.setAttribute(
             "fill",
-            status === "failed" ? "#881337" : status === "success" ? "#064e3b" : "#27272a"
+            status === "failed" ? "#f75b46" : status === "success" ? "#4d4cf8" : "#24325f"
           )
 
           runsChart.appendChild(rect)
@@ -558,17 +559,17 @@
         for (const r of items) {
           const row = document.createElement("button")
           row.type = "button"
-          row.className = "flex w-full items-center justify-between gap-4 py-2 text-left hover:bg-zinc-900"
+          row.className = "flex w-full items-center justify-between gap-4 py-2 text-left hover:bg-[#24325f]"
 
           const left = document.createElement("div")
           left.className = "min-w-0"
 
           const t = document.createElement("div")
-          t.className = "truncate text-base text-zinc-100"
+          t.className = "truncate text-base text-white"
           t.textContent = fmt(r.startMs)
 
           const sub = document.createElement("div")
-          sub.className = "truncate text-sm text-zinc-400"
+          sub.className = "truncate text-sm text-[#efacba]"
           const durMs =
             typeof r.durationMs === "number"
               ? r.durationMs
@@ -666,14 +667,14 @@
           const v = p[k]
           if (!v) continue
           const card = document.createElement("div")
-          card.className = "rounded-lg border border-zinc-800 bg-zinc-950 p-4"
+          card.className = "rounded-lg border border-[#24325f] bg-[#15110f] p-4"
 
           const head = document.createElement("div")
-          head.className = "text-sm text-zinc-400"
+          head.className = "text-sm text-[#efacba]"
           head.textContent = label
 
           const body = document.createElement("div")
-          body.className = "mt-1 break-words text-base text-zinc-100"
+          body.className = "mt-1 break-words text-base text-white"
           body.textContent = v
 
           card.appendChild(head)
