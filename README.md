@@ -18,3 +18,7 @@ Open `http://127.0.0.1:5173`.
 
 - Requires access to `systemctl` and `journalctl`.
 - Run history is derived from journald via `INVOCATION_ID` and is limited by journal retention.
+
+## License
+
+MIT License – see [LICENSE](LICENSE) for details.
